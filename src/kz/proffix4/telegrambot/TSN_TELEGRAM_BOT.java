@@ -1,6 +1,7 @@
 package kz.proffix4.telegrambot;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -9,6 +10,7 @@ import org.json.JSONObject;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
@@ -21,7 +23,8 @@ class MyTelegramBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(update.getMessage().getChatId());
-            sendMessage.setText(doCommand(update.getMessage().getText()));
+            sendMessage.setText(doCommand(update.getMessage().getChatId(),
+                    update.getMessage().getText()));
             try {
                 execute(sendMessage);
             } catch (TelegramApiException e) {
@@ -32,7 +35,7 @@ class MyTelegramBot extends TelegramLongPollingBot {
     // Тут задается нужное значение имени бота
     @Override
     public String getBotUsername() {
-        return "TSN Bot";
+        return "TSN_SUPPER_BOT";
     }
 
     // Тут задается нужное значение токена
@@ -42,8 +45,14 @@ class MyTelegramBot extends TelegramLongPollingBot {
     }
 
     // Метод обработки команд бота
-    public String doCommand(String command) {
+    public String doCommand(long chatId, String command) {
         if (command.equals("/btc")) {
+            SendPhoto msg = new SendPhoto().setChatId(chatId)
+                    .setNewPhoto(new File("picture.jpg"));
+            try {
+                sendPhoto(msg);
+            } catch (TelegramApiException e) {
+            }
             return getBTC();
         }
         return "Используйте команду /btc";
@@ -94,6 +103,7 @@ class MyTelegramBot extends TelegramLongPollingBot {
 }
 
 public class TSN_TELEGRAM_BOT {
+
     public static void main(String[] args) {
         ApiContextInitializer.init();
         TelegramBotsApi botsApi = new TelegramBotsApi();
