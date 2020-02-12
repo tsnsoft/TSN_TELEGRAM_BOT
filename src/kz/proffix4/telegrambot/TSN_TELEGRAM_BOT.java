@@ -46,14 +46,19 @@ class MyTelegramBot extends TelegramLongPollingBot {
 
     // Метод обработки команд бота
     public String doCommand(long chatId, String command) {
-        if (command.equals("/btc")) {
+        if (command.startsWith("/btc")) {
             try {
                 sendPhoto(new SendPhoto().setChatId(chatId).setNewPhoto(new File("btc.png")));
             } catch (TelegramApiException e) {
             }
-            return getBTC();
+            String[] param = command.split(" ");
+            if (param.length > 1) {
+                return "Привет, " + param[1] + "!\n" + getBTC();
+            } else {
+                return getBTC();
+            }
         }
-        return "Используйте команду /btc";
+        return "Используйте команду /btc Ваше_Имя. Можно без имени";
     }
 
     private String getBTC() {
@@ -87,7 +92,7 @@ class MyTelegramBot extends TelegramLongPollingBot {
                 //EUR
                 JSONObject EUR = (JSONObject) bpi.get("EUR");
                 String eur = EUR.get("rate").toString();
-                String bitcoin_currency = "1 Bitcoin\nUSD: " + usd + ";\nGBP: " + gbp + ";\nEUR: " + eur;
+                String bitcoin_currency = "1 Bitcoin=\nUSD: " + usd + ";\nGBP: " + gbp + ";\nEUR: " + eur;
                 return bitcoin_currency;
             } else {
                 return "Error";
