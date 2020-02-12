@@ -47,10 +47,8 @@ class MyTelegramBot extends TelegramLongPollingBot {
     // Метод обработки команд бота
     public String doCommand(long chatId, String command) {
         if (command.equals("/btc")) {
-            SendPhoto msg = new SendPhoto().setChatId(chatId)
-                    .setNewPhoto(new File("picture.jpg"));
             try {
-                sendPhoto(msg);
+                sendPhoto(new SendPhoto().setChatId(chatId).setNewPhoto(new File("btc.png")));
             } catch (TelegramApiException e) {
             }
             return getBTC();
