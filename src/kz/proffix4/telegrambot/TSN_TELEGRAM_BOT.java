@@ -35,7 +35,7 @@ class MyTelegramBot extends TelegramLongPollingBot {
     // Тут задается нужное значение имени бота
     @Override
     public String getBotUsername() {
-        return "TSN_SUPPER_BOT";
+        return "TSN_SUPER_BOT";
     }
 
     // Тут задается нужное значение токена
