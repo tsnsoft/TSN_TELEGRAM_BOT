@@ -6,3 +6,11 @@
 
 ![screenshot](screenshot3.png)
 
+https://core.telegram.org/bots
+https://core.telegram.org/bots/api
+
+https://tlgrm.ru/docs/bots
+https://tlgrm.ru/docs/bots/api
+
+https://github.com/rubenlagus/TelegramBots
+https://repo1.maven.org/maven2/org/telegram/telegrambots/5.0.1/
