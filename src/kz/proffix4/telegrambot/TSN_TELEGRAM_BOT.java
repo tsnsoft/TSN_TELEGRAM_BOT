@@ -6,23 +6,25 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import org.json.JSONObject;
-import org.telegram.telegrambots.ApiContextInitializer;
-import org.telegram.telegrambots.TelegramBotsApi;
-import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.telegrambots.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 class MyTelegramBot extends TelegramLongPollingBot {
 
-    // Метод получения команд бота, тут ничего не трогаем
+    // Связь с пользователем бота, тут ничего не трогаем
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             SendMessage sendMessage = new SendMessage();
-            sendMessage.setChatId(update.getMessage().getChatId());
+            sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
             sendMessage.setText(doCommand(update.getMessage().getChatId(),
                     update.getMessage().getText()));
             try {
@@ -38,18 +40,22 @@ class MyTelegramBot extends TelegramLongPollingBot {
         return "TSN_SUPER_BOT";
     }
 
-    // Тут задается нужное значение токена
+    // Тут задается нужное значение токена для связи с Telegram
     @Override
     public String getBotToken() {
-        return "1061349748:AAFeINsq9jKBXLDXSatTn97RUWQ6NZ96EXU";
+        return "1616329288:AAHu8rgkTxG1EHsGbESRTznFaCED5Hxz3Bw";
     }
 
     // Метод обработки команд бота
     public String doCommand(long chatId, String command) {
         if (command.startsWith("/btc")) {
+            SendPhoto sendPhoto = new SendPhoto();
+            sendPhoto.setChatId(String.valueOf(chatId));
+            sendPhoto.setPhoto(new InputFile(new File("btc.png")));
             try {
-                sendPhoto(new SendPhoto().setChatId(chatId).setNewPhoto(new File("btc.png")));
-            } catch (TelegramApiException e) {
+                execute(sendPhoto);
+            } catch (TelegramApiException ex) {
+                
             }
             String[] param = command.split(" ");
             if (param.length > 1) {
@@ -103,16 +109,23 @@ class MyTelegramBot extends TelegramLongPollingBot {
         }
         return "Error";
     }
+
+    @Override
+    public void onUpdatesReceived(List<Update> updates) {
+        super.onUpdatesReceived(updates); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onRegister() {
+        super.onRegister(); //To change body of generated methods, choose Tools | Templates.
+    }
 }
 
 public class TSN_TELEGRAM_BOT {
-
     public static void main(String[] args) {
-        ApiContextInitializer.init();
-        TelegramBotsApi botsApi = new TelegramBotsApi();
         try {
-            // ЗАПУСКАЕМ КЛАСС НАШЕГО БОТА
-            botsApi.registerBot(new MyTelegramBot());
+            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+            telegramBotsApi.registerBot(new MyTelegramBot());
         } catch (TelegramApiException e) {
         }
     }
